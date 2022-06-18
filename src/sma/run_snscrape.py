@@ -8,16 +8,25 @@ import itertools
 def validate_twitter_args(terms, username, date_range):
 
     #validate that the terms arg is a list of strings
-    if not isinstance(terms, list):
-        raise TypeError("'terms' variable must be a list of strings")
+    if terms != None:
+        if isinstance(terms, str):
+            print("single 'term' provided. pulling posts containing '{}'".format(terms))
+        elif isinstance(terms, list):
+            if all(isinstance(item, str) for item in terms):
+                print("list of 'terms' provided. pulling posts containing each term")
+            else:
+                raise TypeError("'terms' variable must be a single string or list of strings")
+        else:
+            raise TypeError("'terms' variable must be a single string or list of strings")
     else:
-        if not all(isinstance(item, str) for item in terms):
-            raise TypeError("'terms' variable must be a list of strings")
+        print("no 'terms' variable provided. pulling all posts")
 
     #validate that, if defined, the username is a string
     if username != None:
         if not isinstance(username, str):
             raise TypeError("can only provide 'username' argument of type str")
+    else:
+        print("no 'username' provided. pulling tweets from all accounts")
 
     # validate that, if defined, the date_range is a list of 2 string dates
     if date_range != None:
@@ -39,7 +48,11 @@ def create_twitter_query(terms, username, date_range, lang):
     query_components = []
 
     # add each section of the query
-    query_components.append(' OR '.join(terms))
+    if terms != None:
+        if isinstance(terms, str):
+            query_components.append(terms)
+        else:
+            query_components.append(' OR '.join(terms))
 
     if username != None:
         query_components.append('from:{}'.format(str(username).replace('@', '')))
@@ -56,7 +69,7 @@ def create_twitter_query(terms, username, date_range, lang):
     return query_string
 
 
-def scrape_twitter(terms, username=None, date_range=None, lang='en', limit=1000):
+def scrape_twitter(terms=None, username=None, date_range=None, lang='en', limit=1000):
 
     '''
     makes use of the following: https://github.com/igorbrigadir/twitter-advanced-search
