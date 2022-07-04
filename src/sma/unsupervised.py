@@ -1,3 +1,4 @@
+# import packages
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -14,11 +15,22 @@ import spacy
 import contractions
 import string
 
+# download relevant spacy model if required
+if spacy.util.is_package("en_core_web_sm"):
+    pass
+else:
+    spacy.cli.download("en_core_web_sm")
 nlp = spacy.load('en_core_web_sm')
 
 
 
 def clean_tweet(tweet):
+    """
+    more rigorous pre-processing to clean the tweet in advance of clustering
+
+    :param tweet: str object containing the text we wish to clean
+    :return: str object containing the cleaned tweet
+    """
     # replace new line characters with space
     cleaned_tweet = tweet.strip().replace('\n', ' ')
     # convert to lower
@@ -54,6 +66,13 @@ def clean_tweet(tweet):
 
 
 def obtain_tweet_vector(tokens, model):
+    """
+    function for obtaining aggregate word2vec vector for tweet
+
+    :param tokens: list object containing tokenized tweet post processing
+    :param model: Word2Vec model that has been initiated with desired parameters
+    :return: array object containing the aggregate tweet vector 
+    """
     
     vectors = []
     for token in tokens:
@@ -62,19 +81,30 @@ def obtain_tweet_vector(tokens, model):
         else:
             continue
 
-    average_vector = np.asarray(vectors).mean(axis=0)
+    if len(vectors)>0:
+        average_vector = np.asarray(vectors).mean(axis=0)
+    else:
+        average_vector = None
 
     return average_vector
 
 
-def plot_elbow(vectors, max_clusters, model_type='lloyd'):
+def plot_elbow(vectors, max_clusters, model_type='lloyd', iterations=300):
+    """
+    function for plotting elbow plot to determine suitable number of clusters for KMeans
+    computes for each number of clusters the 
+
+    :param vectors: array object containing the embedding vectors for all tweets
+    :param max_clusters: int indicating the maximum number of clusters we are interested in testing 
+    :param model_type: str indicating the algorithm by which we want KMeans that cluster  
+    """
 
     K = range(1,max_clusters)
     distortions = []
     i = 1
     for k in K:
-        print(f'Computing distortions {str(i)} / {max_clusters}')
-        kmeans = KMeans(n_clusters=k, algorithm = model_type, random_state=0)
+        print(f'Computing WCSS {str(i)} / {max_clusters}')
+        kmeans = KMeans(n_clusters=k, algorithm = model_type, max_iter = iterations,random_state=0)
         kmeans.fit(vectors)
         distortions.append(kmeans.inertia_)
         i= i+1

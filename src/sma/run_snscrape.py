@@ -6,6 +6,13 @@ import itertools
 
 
 def validate_twitter_args(terms, username, date_range):
+    """
+    function for checking the input parameters and reporting any issues with arguments provided
+
+    :param terms: str or list or None object represents the term(s) to be searched for
+    :param username: stror None object that represents the username (excluding the "@") who's account to search
+    :param date_range: list object containing to str that represent the start and end date in which to search
+    """
 
     #validate that the terms arg is a list of strings
     if terms != None:
@@ -43,6 +50,15 @@ def validate_twitter_args(terms, username, date_range):
 
 
 def create_twitter_query(terms, username, date_range, lang):
+    """
+    function for creating the API payload to pull the relevant tweets
+
+    :param terms: str or list or None object represents the term(s) to be searched for
+    :param username: stror None object that represents the username (excluding the "@") who's account to search
+    :param date_range: list object containing to str that represent the start and end date in which to search
+    :param lang: str indicating the two letter abbreviation for the laguage of tweets you want to pull
+    :return: str object containing the payload to pass to the SNScrape API
+    """
 
     # create components of the search query
     query_components = []
@@ -72,13 +88,15 @@ def create_twitter_query(terms, username, date_range, lang):
 def scrape_twitter(terms=None, username=None, date_range=None, lang='en', limit=1000):
 
     '''
+    fucntion to pull tweets given several parameters
     makes use of the following: https://github.com/igorbrigadir/twitter-advanced-search
 
-    :param terms:
-    :param username:
-    :param date_range:
-    :param limit:
-    :return:
+    :param terms: str or list or None object represents the term(s) to be searched for
+    :param username: stror None object that represents the username (excluding the "@") who's account to search
+    :param date_range: list object containing to str that represent the start and end date in which to search
+    :param lang: str indicating the two letter abbreviation for the laguage of tweets you want to pull
+    :param limit: int object to indicate the maximum number of tweets to pull
+    :return: dataframe containing the pulled tweet information
     '''
 
     #ensure the arguments have been provided in the correct format
@@ -90,6 +108,5 @@ def scrape_twitter(terms=None, username=None, date_range=None, lang='en', limit=
     #run the search
     scraped_tweets = itertools.islice(sntwitter.TwitterSearchScraper(query).get_items(), limit)
     response_df = pd.DataFrame(scraped_tweets)
-
 
     return response_df

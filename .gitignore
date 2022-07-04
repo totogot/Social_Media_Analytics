@@ -130,4 +130,6 @@ dmypy.json
 
 # Ignore our saved files
 *.csv
+*.pkl
 *.pickle
+*.model
