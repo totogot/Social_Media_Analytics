@@ -1,5 +1,9 @@
 ## SocialAnalytics
 
+Repository showing a example project developed to analyse Twitter content on a specific company. This project gives a view of how to leverage open-source packages to pull tweets, run unsupervised clustering to develop training data, and utilise the training data to build supervised classifiers for tagging future data.
+
+The main.ipynb contains the run code, with accompanying commentary, while the sma package contains helper functions and wrappers.
+
 # Initial setup
 The first thing you are going to want to do is set up a virtual environment for installing all package requirements into
 
@@ -17,7 +21,7 @@ $ pip install --upgrade pip
 $ pip install .
 ```
 
-This last command will install all dependencies outlined in the setup.cfg file. I have included ipykernel in there to enable the scripts to be run from notebooks also.
+This last command will install all dependencies outlined in the setup.cfg file. ipykernel has been included to enable the main.ipynb to be run also and for relevant visualisations to be outputted also.
 
 # Pulling tweets
 To pull posts from social media, I have opted to use the wonderful SNScrape package (https://github.com/JustAnotherArchivist/snscrape) - which comes with a nice Python wrapper to allow users to scrape social media content from across a range of channels (Twitter, Instagram, Facebook, Reddit, Telegram, etc.).
