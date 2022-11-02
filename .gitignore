@@ -133,3 +133,5 @@ dmypy.json
 *.pkl
 *.pickle
 *.model
+
+.idea
